@@ -1,0 +1,85 @@
+:root {
+  --primary: #0f0f0f;
+  --gold: #d4af37;
+  --light: #f8f9fa;
+  --gray: #666;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--primary);
+  line-height: 1.7;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6, .display-3 {
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.navbar-brand {
+  font-family: 'Lora', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  border: none;
+  padding: 14px 36px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--gold);
+  color: black;
+}
+
+.hero {
+  height: 100vh;
+  min-height: 700px;
+  background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1578926375600-7da3f5f45c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=3200&q=90') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+.artwork-card {
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.artwork-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+.price-on-request {
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.section {
+  padding: 120px 0;
+}
+
+.badge {
+  font-size: 0.7rem;
+}
+
+footer {
+  background: #000;
+}
+
+#cart-items img {
+  width: 80px;
+  object-fit: cover;
+}
+.artwork-card img {
+  width: 100%;
+  aspect-ratio: 16/9 ;  
+  overflow: hidden; }

@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M&N Gallery | Contemporary Art</title>
+  
+  <!-- Fonts & Style -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+
+  <style>
+    :root { --black: #0f0f0f; --gold: #d4af37; --white: #fafafa; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fff; color: var(--black); overflow-x: hidden; }
+    h1,h2,h3,h5 { font-family: 'Lora', serif; font-weight: 600; letter-spacing: -0.5px; }
+
+    /* Navbar */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; padding: 1rem 1.5rem; background: transparent; transition: all .4s ease; z-index: 1000; }
+    .navbar.scrolled { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 5px 20px rgba(0,0,0,0.05); padding: 0.5rem 1.5rem; }
+    .navbar-brand { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 700; color: white !important; transition: color 0.3s; }
+    .navbar.scrolled .navbar-brand { color: var(--black) !important; }
+    
+    .nav-link { color: rgba(255,255,255,.9)!important; font-weight: 500; font-size: .95rem; margin: 0 5px; transition: color 0.3s; }
+    .navbar.scrolled .nav-link { color: var(--black) !important; }
+    .nav-link:hover { color: var(--gold)!important; }
+
+    /* Hero */
+    .hero { height: 85vh; min-height: 600px; background: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.6)), url('https://images.unsplash.com/photo-1578926375600-7da3f5f45c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=90') center/cover no-repeat fixed; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+    .hero h1 { font-size: 3.5rem; letter-spacing: -2px; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto; opacity: 0.9; font-weight: 300; }
+
+    /* Collection */
+    #collection { padding: 100px 0 100px; background: white; }
+    .artwork-card { margin-bottom: 3rem; }
+    
+    .img-wrap {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16/9; /* Formato Cinema come richiesto */
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.1);
+      position: relative;
+    }
+    
+    .img-wrap img { 
+      width: 100%; height: 100%; 
+      object-fit: cover; 
+      transition: transform .7s cubic-bezier(0.25, 1, 0.5, 1); 
+    }
+    
+    .artwork-card:hover img { transform: scale(1.05); }
+
+    .artwork-info { padding-top: 15px; }
+    .artwork-title { font-size: 1.3rem; margin-bottom: 2px; }
+    .artwork-artist { font-size: 0.95rem; color: #666; font-style: italic; }
+    .price { font-size: 1rem; color: var(--black); font-weight: 600; margin-top: 5px; }
+    
+    .btn-add-cart {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #ddd;
+      background: transparent;
+      padding: 8px 20px;
+      transition: all 0.3s;
+    }
+    .btn-add-cart:hover { background: var(--black); color: white; border-color: var(--black); }
+
+    /* Journal & Footer */
+    #journal { padding: 100px 0; background: #f9f9f9; }
+    footer { padding: 60px 0; text-align: center; font-size: 0.85rem; color: #888; background: #111; }
+    
+    /* Cart Button Floating */
+    .cart-float { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--black); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; z-index: 1050; box-shadow: 0 10px 30px rgba(0,0,0,.3); cursor: pointer; transition: transform 0.2s; }
+    .cart-float:active { transform: scale(0.9); }
+    .cart-float .badge { position: absolute; top: -5px; right: -5px; background: var(--gold); color: black; border-radius: 50%; font-size: 0.75rem; padding: 5px 8px; }
+
+    /* Mobile Menu fix */
+    @media (max-width: 991px) {
+      .navbar { background: white; padding: 1rem; }
+      .navbar-brand, .nav-link { color: var(--black) !important; }
+      .navbar-collapse { border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">M&N Gallery</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center text-center">
+        <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav_home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#collection" data-i18n="nav_collection">Collection</a></li>
+        <li class="nav-item"><a class="nav-link" href="#journal" data-i18n="nav_journal">Journal</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav_contact">Contact</a></li>
+        
+        <!-- Language -->
+        <li class="nav-item dropdown ms-lg-3">
+          <a class="nav-link dropdown-toggle" href="#" id="lang-btn" role="button" data-bs-toggle="dropdown">IT</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" onclick="setLanguage('it')">Italiano</a></li>
+            <li><a class="dropdown-item" href="#" onclick="setLanguage('en')">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="setLanguage('es')">Español</a></li>
+          </ul>
+        </li>
+
+        <!-- Currency -->
+        <li class="nav-item dropdown ms-lg-2">
+          <a class="nav-link dropdown-toggle fw-bold" href="#" id="currency-btn" role="button" data-bs-toggle="dropdown">EUR</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" onclick="manualCurrency('EUR')">EUR (€)</a></li>
+            <li><a class="dropdown-item" href="#" onclick="manualCurrency('USD')">USD ($)</a></li>
+            <li><a class="dropdown-item" href="#" onclick="manualCurrency('GBP')">GBP (£)</a></li>
+            <li><a class="dropdown-item" href="#" onclick="manualCurrency('JPY')">JPY (¥)</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="home" class="hero">
+  <div class="container">
+    <h1 data-i18n="hero_title">M&N Gallery</h1>
+    <p data-i18n="hero_subtitle">Milano • Londra<br>Arte contemporanea e maestri moderni</p>
+    <div class="mt-4">
+      <a href="#collection" class="btn btn-primary btn-lg rounded-0 border-0 px-5 py-3" style="background:var(--gold)" data-i18n="hero_cta">Esplora Collezione</a>
+    </div>
+  </div>
+</section>
+
+<!-- Collection -->
+<section id="collection">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 data-i18n="collection_title">Collezione Attuale</h2>
+      <p class="text-muted" data-i18n="collection_subtitle">Opere disponibili per l'acquisto</p>
+    </div>
+    
+    <!-- Griglia Opere (Generata da JS) -->
+    <div class="row g-5" id="artworks-container"></div>
+  </div>
+</section>
+
+<!-- Journal -->
+<section id="journal">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 data-i18n="journal_title">Journal & Insights</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm bg-white">
+          <div style="height:200px; overflow:hidden;"><img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=800" class="w-100 h-100 object-fit-cover"></div>
+          <div class="card-body">
+            <small class="text-warning fw-bold">MARKET</small>
+            <h5 class="mt-2" data-i18n="article_1_title">Previsioni Mercato 2025</h5>
+            <p class="text-muted small mb-0" data-i18n="article_1_desc">Perché la scarsità guida le valutazioni nell'era post-digitale.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm bg-white">
+          <div style="height:200px; overflow:hidden;"><img src="https://images.unsplash.com/photo-1545989253-02cc26577f88?w=800" class="w-100 h-100 object-fit-cover"></div>
+          <div class="card-body">
+            <small class="text-warning fw-bold">STUDIO VISIT</small>
+            <h5 class="mt-2" data-i18n="article_2_title">Visita a Barry X Ball</h5>
+            <p class="text-muted small mb-0" data-i18n="article_2_desc">Dentro lo studio di Brooklyn dove la tecnologia incontra il marmo.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm bg-white">
+          <div style="height:200px; overflow:hidden;"><img src="https://images.unsplash.com/photo-1554907984-15263bfd63bd?w=800" class="w-100 h-100 object-fit-cover"></div>
+          <div class="card-body">
+            <small class="text-warning fw-bold">AUCTION</small>
+            <h5 class="mt-2" data-i18n="article_3_title">Risultati Aste Londra</h5>
+            <p class="text-muted small mb-0" data-i18n="article_3_desc">Nuovi record per i maestri italiani del dopoguerra.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="py-5 bg-white">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <h2 class="text-center mb-5" data-i18n="contact_title">Richiesta Privata</h2>
+        <form>
+          <div class="mb-4"><input type="text" class="form-control form-control-lg border-bottom border-0 rounded-0" data-i18n-placeholder="form_name" placeholder="Name"></div>
+          <div class="mb-4"><input type="email" class="form-control form-control-lg border-bottom border-0 rounded-0" data-i18n-placeholder="form_email" placeholder="Email"></div>
+          <div class="mb-4"><textarea class="form-control form-control-lg border-bottom border-0 rounded-0" rows="4" data-i18n-placeholder="form_msg" placeholder="Message"></textarea></div>
+          <div class="text-center mt-5">
+            <button type="button" class="btn btn-dark btn-lg px-5 rounded-0" data-i18n="form_btn">Invia Richiesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 M&N Gallery • Milano • London • New York</p>
+</footer>
+
+<!-- Floating Cart Button -->
+<div class="cart-float" onclick="openCartModal()">
+  <i class="bi bi-bag"></i>
+  <span class="badge" id="cartCount">0</span>
+</div>
+
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" data-i18n="cart_title">La tua selezione</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="cart-modal-body">
+        <!-- JS fills this -->
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-dark w-100 py-3" data-i18n="cart_checkout">Procedi alla richiesta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+<script>
+// --- 1. DATI OPERE (Il tuo elenco originale) ---
+const artworks = [
+  { id:1, artist: "Barry X Ball", title: "Purity", year: "2022", price: 0, img: "https://www.torart.com/public/img/download-195247.jpg" },
+  { id:2, artist: "Damien Hirst", title: "Beautiful Galactic Explosive", year: "2023", price: 2800000, img: "https://www.eyestorm.com/Images/NewsArticles/2093/Pages/1921.jpg" },
+  { id:3, artist: "Jeff Koons", title: "Balloon Dog (Orange)", year: "1994", price: 58000000, img: "https://blog.artsper.com/wp-content/uploads/2025/06/Jeff-Koons-Balloon-Dog-Orange-Sculpture.jpg" },
+  { id:4, artist: "Maurizio Cattelan", title: "Comedian", year: "2019", price: 0, img: "https://www.quotidiano.net/image-service/view/acePublic/alias/contentid/ZjU0M2JkODMtMmE3Mi00/0/l-opera-comedian-di-maurizio-cattelan-sotheby-s.webp" },
+  { id:5, artist: "Jean-Michel Basquiat", title: "Untitled (Skull)", year: "1981", price: 110000000, img: "https://artincontext.org/wp-content/uploads/2024/06/Untitled-Skull-Painting-by-Jean-Michel-Basquiat.jpg" },
+  { id:6, artist: "Yayoi Kusama", title: "Yellow Pumpkin", year: "1994", price: 8500000, img: "https://images.prismic.io/sayhito/b3a090e0-c8c6-44f9-8936-32fffc3e3457_sayhito_Japan_Naoshima-Island-Yayoi-Kasuma_ph_Kristen-de-la-valliere-1.webp" },
+  { id:7, artist: "Andy Warhol", title: "Marilyn Monroe", year: "1967", price: 195000000, img: "https://www.picamemag.com/wp-content/uploads/2022/05/andy-warhol-marilyn-monroe-picame-ev.png" },
+  { id:8, artist: "Banksy", title: "Girl with Balloon", year: "2006", price: 24000000, img: "https://www.singulart.com/blog/wp-content/uploads/2023/12/Banksy_Girl_and_Heart_Balloon_2840632113-1.jpg" },
+  { id:9, artist: "Pablo Picasso", title: "Les Femmes d'Alger", year: "1955", price: 179000000, img: "https://www.arteworld.it/wp-content/uploads/2016/05/Les-Femmes-dAlger-Version-O-Picasso-analisi.jpg" },
+  { id:10, artist: "Gerhard Richter", title: "Abstraktes Bild", year: "1986", price: 46000000, img: "https://cdn.gerhard-richter.com/images/original/8411.jpg?width=673&height=673" },
+  { id:11, artist: "David Hockney", title: "Portrait of an Artist", year: "1972", price: 90000000, img: "https://www.thedavidhockneyfoundation.org/storage/app/uploads/public/fa5/a75/a95/thumb__960_0_0_0_auto.jpg" },
+  { id:12, artist: "Mark Rothko", title: "Orange, Red, Yellow", year: "1961", price: 86900000, img: "https://www.mark-rothko.org/assets/img/paintings/orange-red-yellow.jpg" },
+  { id:13, artist: "Lucio Fontana", title: "Concetto Spaziale, Attese", year: "1965", price: 15000000, img: "https://artslife.com/wp-content/uploads/2018/12/Lucio-Fontana-Concetto-spaziale.-Attese.jpg" },
+  { id:14, artist: "Cy Twombly", title: "Untitled (New York City)", year: "1968", price: 70500000, img: "https://news.artnet.com/app/news-upload/2015/11/cy-twombly-untitled-new-york-city.jpg" },
+  { id:15, artist: "Alberto Giacometti", title: "L'Homme au doigt", year: "1947", price: 141000000, img: "https://www.christies.com/-/media/images/features/articles/2015/04/15/giacometti/mainimages.jpg" },
+  { id:16, artist: "Willem de Kooning", title: "Interchange", year: "1955", price: 300000000, img: "https://i.etsystatic.com/17804774/r/il/22805e/2207394236/il_fullxfull.2207394236_6a2g.jpg" },
+  { id:17, artist: "Jackson Pollock", title: "Number 17A", year: "1948", price: 200000000, img: "https://arthive.com/res/media/img/oy200/work/156/291666@2x.jpeg" },
+  { id:18, artist: "Gustav Klimt", title: "Adele Bloch-Bauer II", year: "1912", price: 150000000, img: "https://upload.wikimedia.org/wikipedia/commons/3/33/Gustav_Klimt_047.jpg" },
+  { id:19, artist: "Roy Lichtenstein", title: "Masterpiece", year: "1962", price: 165000000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx3PxxJxsO9M-ecbBhz_0wstpsWQKsdnSY5Q&s" },
+  { id:20, artist: "Anish Kapoor", title: "Cloud Gate (Study)", year: "2004", price: 2500000, img: "https://www.artchive.com/wp-content/uploads/2024/08/Cloud-Gate-Anish-Kapoor-2004--scaled.jpg" },
+  { id:21, artist: "Ai Weiwei", title: "Dropping a Han Dynasty Urn", year: "1995", price: 1000000, img: "https://preview.redd.it/x4kz28u7e8441.jpg?auto=webp&s=8f34eb0e13eb745bacf7161bcc52b5ec0ffc5d1a" },
+  { id:22, artist: "Takashi Murakami", title: "727", year: "1996", price: 3500000, img: "https://uploads3.wikiart.org/images/takashi-murakami/727-1996.jpg" },
+  { id:23, artist: "Donald Judd", title: "Untitled (Stack)", year: "1967", price: 9000000, img: "https://static01.nyt.com/images/2013/10/25/arts/25GALLERIES1_SPAN/GALLERIES1-superJumbo.jpg" },
+];
+
+// --- 2. DIZIONARIO TRADUZIONI (i18n) ---
+const translations = {
+  it: {
+    nav_home: "Home",
+    nav_collection: "Collezione",
+    nav_journal: "Giornale",
+    nav_contact: "Contatti",
+    hero_title: "M&N Gallery",
+    hero_subtitle: "Milano • Londra<br>Arte contemporanea e maestri moderni",
+    hero_cta: "Esplora Collezione",
+    collection_title: "Collezione Attuale",
+    collection_subtitle: "Opere disponibili per l'acquisto",
+    journal_title: "Journal & Insights",
+    article_1_title: "Previsioni Mercato 2025",
+    article_1_desc: "Perché la scarsità guida le valutazioni nell'era post-digitale.",
+    article_2_title: "Visita a Barry X Ball",
+    article_2_desc: "Dentro lo studio di Brooklyn dove la tecnologia incontra il marmo.",
+    article_3_title: "Risultati Aste Londra",
+    article_3_desc: "Nuovi record per i maestri italiani del dopoguerra.",
+    contact_title: "Richiesta Privata",
+    form_name: "Nome",
+    form_email: "Email",
+    form_msg: "Messaggio",
+    form_btn: "Invia Richiesta",
+    cart_title: "La tua selezione",
+    cart_empty: "Il carrello è vuoto",
+    cart_checkout: "Invia Richiesta Quotazione",
+    cart_add_btn: "Aggiungi al Carrello",
+    cart_added_btn: "Aggiunto ✓",
+    price_req: "Prezzo su richiesta",
+    total: "Stima Totale"
+  },
+  en: {
+    nav_home: "Home",
+    nav_collection: "Collection",
+    nav_journal: "Journal",
+    nav_contact: "Contact",
+    hero_title: "M&N Gallery",
+    hero_subtitle: "Milan • London<br>Contemporary art and modern masters",
+    hero_cta: "Explore Collection",
+    collection_title: "Current Collection",
+    collection_subtitle: "Works available for acquisition",
+    journal_title: "Journal & Insights",
+    article_1_title: "The 2025 Market Forecast",
+    article_1_desc: "Why scarcity is driving valuations in the post-digital era.",
+    article_2_title: "Visiting Barry X Ball",
+    article_2_desc: "Inside the Brooklyn studio where technology meets marble.",
+    article_3_title: "London Evening Sale",
+    article_3_desc: "New records set for Italian Post-War masters.",
+    contact_title: "Private Inquiry",
+    form_name: "Name",
+    form_email: "Email",
+    form_msg: "Message",
+    form_btn: "Send Request",
+    cart_title: "Your Selection",
+    cart_empty: "Your cart is empty",
+    cart_checkout: "Submit Inquiry",
+    cart_add_btn: "Add to Cart",
+    cart_added_btn: "Added ✓",
+    price_req: "Price on request",
+    total: "Total Estimate"
+  },
+  es: {
+    nav_home: "Inicio",
+    nav_collection: "Colección",
+    nav_journal: "Revista",
+    nav_contact: "Contacto",
+    hero_title: "M&N Gallery",
+    hero_subtitle: "Milán • Londres<br>Arte contemporáneo y maestros modernos",
+    hero_cta: "Explorar Colección",
+    collection_title: "Colección Actual",
+    collection_subtitle: "Obras disponibles para adquisición",
+    journal_title: "Revista y Perspectivas",
+    article_1_title: "Pronóstico del Mercado 2025",
+    article_1_desc: "Por qué la escasez impulsa las valoraciones en la era posdigital.",
+    article_2_title: "Visitando a Barry X Ball",
+    article_2_desc: "Dentro del estudio de Brooklyn donde la tecnología se encuentra con el mármol.",
+    article_3_title: "Subasta de Londres",
+    article_3_desc: "Nuevos récords para los maestros italianos de la posguerra.",
+    contact_title: "Consulta Privada",
+    form_name: "Nombre",
+    form_email: "Correo",
+    form_msg: "Mensaje",
+    form_btn: "Enviar Solicitud",
+    cart_title: "Tu Selección",
+    cart_empty: "Tu carrito está vacío",
+    cart_checkout: "Enviar Consulta",
+    cart_add_btn: "Añadir a la Cesta",
+    cart_added_btn: "Añadido ✓",
+    price_req: "Precio a consultar",
+    total: "Estimación Total"
+  }
+};
+
+// --- 3. STATO SISTEMA ---
+let currentLang = 'it';
+let currentCurrency = 'EUR';
+let currentRate = 1;
+let cart = JSON.parse(localStorage.getItem('mnCart')) || [];
+let lightbox;
+
+// --- 4. FUNZIONI PRINCIPALI ---
+
+// Cambio Lingua
+function setLanguage(lang) {
+  currentLang = lang;
+  
+  // Update Testi HTML
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) el.innerHTML = translations[lang][key];
+  });
+  
+  // Update Placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[lang][key]) el.placeholder = translations[lang][key];
+  });
+
+  // Update Button Text
+  document.getElementById('lang-btn').textContent = lang.toUpperCase();
+  
+  // Re-render per aggiornare i testi dentro le card (Add to Cart / Prezzi)
+  renderArtworks();
+  renderCartModal();
+}
+
+// Cambio Valuta (API)
+async function manualCurrency(currency) {
+  document.getElementById('currency-btn').textContent = currency;
+  try {
+    if (currency === 'EUR') {
+      currentRate = 1;
+    } else {
+      const res = await fetch(`https://open.er-api.com/v6/latest/EUR`);
+      const data = await res.json();
+      currentRate = data.rates[currency];
+    }
+    currentCurrency = currency;
+    renderArtworks(); // Ricalcola prezzi
+    renderCartModal();
+  } catch(e) { console.error(e); }
+}
+
+// Formattazione Prezzo
+function formatPrice(eurPrice) {
+  if (!eurPrice || eurPrice === 0) return `<span class="text-muted small">${translations[currentLang].price_req}</span>`;
+  const val = eurPrice * currentRate;
+  return new Intl.NumberFormat(currentLang === 'it' ? 'it-IT' : 'en-US', {
+    style: 'currency', currency: currentCurrency, maximumFractionDigits: 0
+  }).format(val);
+}
+
+// Render Griglia Opere
+function renderArtworks() {
+  const container = document.getElementById('artworks-container');
+  const t = translations[currentLang];
+  
+  container.innerHTML = artworks.map(art => {
+    const isInCart = cart.some(item => item.id === art.id);
+    const btnText = isInCart ? t.cart_added_btn : t.cart_add_btn;
+    const btnClass = isInCart ? 'btn-dark text-white' : '';
+    
+    return `
+    <div class="col-md-6 col-lg-4 artwork-card">
+      <a href="${art.img}" class="glightbox img-wrap" 
+         data-glightbox="title: ${art.title}; description: ${art.artist}, ${art.year}">
+        <img src="${art.img}" alt="${art.title}" loading="lazy">
+      </a>
+      <div class="artwork-info">
+        <h5 class="artwork-title">${art.title}</h5>
+        <p class="artwork-artist">${art.artist}, ${art.year}</p>
+        <p class="price">${formatPrice(art.price)}</p>
+        <button class="btn-add-cart ${btnClass}" onclick="addToCart(${art.id})" ${isInCart ? 'disabled' : ''}>
+          ${btnText}
+        </button>
+      </div>
+    </div>
+  `}).join('');
+
+  // Re-init Lightbox
+  if(lightbox) lightbox.destroy();
+  lightbox = GLightbox({ touchNavigation: true, loop: true });
+}
+
+// --- 5. LOGICA CARRELLO ---
+
+function addToCart(id) {
+  const art = artworks.find(a => a.id === id);
+  if(!cart.some(item => item.id === id)) {
+    cart.push(art);
+    localStorage.setItem('mnCart', JSON.stringify(cart));
+    updateCartIcon();
+    renderArtworks(); // Aggiorna stato bottoni
+    
+    // Feedback tattile/visivo veloce
+    openCartModal();
+  }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(item => item.id !== id);
+  localStorage.setItem('mnCart', JSON.stringify(cart));
+  updateCartIcon();
+  renderArtworks();
+  renderCartModal();
+}
+
+function updateCartIcon() {
+  document.getElementById('cartCount').textContent = cart.length;
+}
+
+function openCartModal() {
+  renderCartModal();
+  new bootstrap.Modal(document.getElementById('cartModal')).show();
+}
+
+function renderCartModal() {
+  const body = document.getElementById('cart-modal-body');
+  const t = translations[currentLang];
+  
+  if(cart.length === 0) {
+    body.innerHTML = `<div class="text-center py-5 text-muted"><i class="bi bi-bag display-4"></i><p class="mt-2">${t.cart_empty}</p></div>`;
+    return;
+  }
+
+  let totalVal = 0;
+  const listHtml = cart.map(item => {
+    totalVal += item.price;
+    return `
+    <div class="d-flex align-items-center mb-3 border-bottom pb-3">
+      <img src="${item.img}" style="width:70px; height:70px; object-fit:cover; border-radius:3px;">
+      <div class="ms-3 flex-grow-1">
+        <h6 class="mb-0 fw-bold">${item.title}</h6>
+        <small class="text-muted">${item.artist}</small>
+        <div class="text-gold small fw-bold">${formatPrice(item.price)}</div>
+      </div>
+      <button class="btn btn-sm text-danger" onclick="removeFromCart(${item.id})"><i class="bi bi-trash"></i></button>
+    </div>
+  `}).join('');
+
+  body.innerHTML = `
+    ${listHtml}
+    <div class="d-flex justify-content-between pt-2">
+      <span class="fw-bold">${t.total}</span>
+      <span class="fw-bold fs-5">${formatPrice(totalVal)}</span>
+    </div>
+  `;
+}
+
+// Navbar Scroll Effect
+window.addEventListener('scroll', () => {
+  document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  setLanguage('it'); // Lingua default
+  updateCartIcon();
+});
+
+</script>
+</body>
+</html>
+```
