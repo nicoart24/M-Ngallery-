@@ -73,4 +73,4 @@ Il nostro obiettivo è creare un'esperienza digitale che non sia solo un negozio
 3.  Oppure visualizzare la live demo su Stackblitz/Vercel/Netlify.
 
 ---
-*Ultimo aggiornamento: [Inserisci Data Odierna]*
+*Ultimo aggiornamento: [28/01/2026]*
